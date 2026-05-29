@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesquisa — Novo módulo fiscal integrado ao e-CAC | Confi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset & WordPress Full-Bleed ──────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; min-height: 100vh; overflow-x: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Remove WordPress theme padding/margin */
+body,
+.wp-site-blocks, .entry-content, .wp-block-group,
+#content, #page, .site-main, .page-content,
+main, article, .hentry, .site-inner, .content-area,
+.elementor-section-wrap, .elementor-container {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* ─── Wrapper ─────────────────────────────────────────────────────────────── */
+#ecac-survey {
+  width: 100%;
+  min-height: 100vh;
+  background: #050e20;
+  background-image:
+    radial-gradient(ellipse at 15% 5%,  rgba(30,111,217,.18) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 90%, rgba(16, 60, 140,.14) 0%, transparent 45%),
+    linear-gradient(160deg, #050e20 0%, #0b1f3e 50%, #050e20 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 16px 72px;
+}
+
+/* ─── Brand badge ─────────────────────────────────────────────────────────── */
+.s-brand {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 99px; padding: 5px 16px;
+  color: rgba(255,255,255,.65); font-size: 12px; font-weight: 500;
+  letter-spacing: .4px; margin-bottom: 28px;
+}
+.s-brand-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #2f8bff;
+  box-shadow: 0 0 8px rgba(47,139,255,.9);
+  flex-shrink: 0;
+}
+
+/* ─── Card ────────────────────────────────────────────────────────────────── */
+.s-card {
+  width: 100%; max-width: 660px;
+  background: #fff; border-radius: 20px; overflow: hidden;
+  box-shadow: 0 30px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.04);
+}
+
+/* ─── Card header ─────────────────────────────────────────────────────────── */
+.s-header {
+  background: linear-gradient(130deg, #0d2f70 0%, #1a5fd4 55%, #2178f0 100%);
+  padding: 32px 40px 28px; position: relative; overflow: hidden;
+}
+.s-header::before {
+  content: ''; position: absolute;
+  top: -40px; right: 30px; width: 130px; height: 130px;
+  border-radius: 50%; background: rgba(255,255,255,.05);
+}
+.s-header::after {
+  content: ''; position: absolute;
+  bottom: -25px; right: -20px; width: 90px; height: 90px;
+  border-radius: 50%; background: rgba(255,255,255,.04);
+}
+.s-header-tag {
+  display: inline-block;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 99px; padding: 3px 12px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  color: rgba(255,255,255,.8); margin-bottom: 14px;
+  position: relative; z-index: 1;
+}
+.s-header h1 {
+  font-size: 21px; font-weight: 700; color: #fff; line-height: 1.32;
+  margin-bottom: 10px; position: relative; z-index: 1;
+}
+.s-header p {
+  font-size: 13.5px; color: rgba(255,255,255,.7);
+  line-height: 1.55; position: relative; z-index: 1;
+}
+.s-header-meta {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 14px; background: rgba(255,255,255,.1);
+  border-radius: 99px; padding: 4px 12px;
+  font-size: 11.5px; color: rgba(255,255,255,.7);
+  position: relative; z-index: 1;
+}
+
+/* ─── Progress ────────────────────────────────────────────────────────────── */
+.s-progress {
+  padding: 18px 40px 0; background: #fff;
+}
+.s-progress-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.s-progress-label { font-size: 11.5px; color: #9ca3af; font-weight: 500; }
+.s-progress-pct   { font-size: 11.5px; color: #1a5fd4; font-weight: 700; }
+.s-progress-track {
+  height: 4px; background: #e9ecef; border-radius: 99px; overflow: hidden;
+}
+.s-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0d2f70, #2178f0);
+  border-radius: 99px;
+  transition: width .55s cubic-bezier(.4,0,.2,1);
+}
+
+/* ─── Steps ───────────────────────────────────────────────────────────────── */
+.s-body { padding: 32px 40px 28px; }
+
+.s-step { display: none; }
+.s-step.active {
+  display: block;
+  animation: fadeUp .32s ease forwards;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Step indicator */
+.s-step-indicator {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 26px;
+}
+.s-step-num {
+  width: 31px; height: 31px; border-radius: 50%;
+  background: linear-gradient(135deg, #0d2f70, #2178f0);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.s-step-name {
+  font-size: 11px; font-weight: 700; color: #1a5fd4;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* ─── Question ────────────────────────────────────────────────────────────── */
+.s-question { margin-bottom: 26px; }
+.s-question:last-child { margin-bottom: 0; }
+
+.s-q-label {
+  font-size: 15px; font-weight: 600; color: #111827;
+  line-height: 1.45; margin-bottom: 5px;
+}
+.s-badge-req {
+  display: inline-block; background: #fee2e2; color: #dc2626;
+  font-size: 9.5px; font-weight: 700; border-radius: 4px;
+  padding: 1px 6px; margin-left: 5px; vertical-align: middle;
+}
+.s-badge-opt {
+  display: inline-block; background: #f3f4f6; color: #9ca3af;
+  font-size: 9.5px; font-weight: 600; border-radius: 4px;
+  padding: 1px 6px; margin-left: 5px; vertical-align: middle;
+}
+.s-q-hint {
+  font-size: 12px; color: #b0b8c8; margin-bottom: 13px; font-weight: 400;
+}
+
+/* ─── Text inputs ─────────────────────────────────────────────────────────── */
+.s-input, .s-textarea {
+  width: 100%; padding: 12px 15px;
+  border: 2px solid #e5e7eb; border-radius: 10px;
+  font-size: 14.5px; color: #111827; font-family: inherit;
+  background: #f9fafb; outline: none;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.s-input:focus, .s-textarea:focus {
+  border-color: #1a5fd4; background: #fff;
+  box-shadow: 0 0 0 4px rgba(26,95,212,.08);
+}
+.s-input.has-error, .s-textarea.has-error {
+  border-color: #dc2626;
+}
+.s-textarea { resize: none; line-height: 1.55; padding-top: 13px; }
+
+.s-char-count {
+  font-size: 11px; color: #c4cad5; text-align: right; margin-top: 4px;
+}
+
+/* ─── Error msg ───────────────────────────────────────────────────────────── */
+.s-error {
+  font-size: 12px; color: #dc2626; margin-top: 5px; display: none;
+}
+.s-error.show { display: block; }
+
+/* ─── Options ─────────────────────────────────────────────────────────────── */
+.s-opts { display: flex; flex-direction: column; gap: 9px; }
+
+.s-opt { position: relative; }
+.s-opt input[type=radio],
+.s-opt input[type=checkbox] {
+  position: absolute; opacity: 0; width: 0; height: 0;
+}
+
+.s-opt-label {
+  display: flex; align-items: flex-start; gap: 13px;
+  padding: 13px 16px; border: 2px solid #e5e7eb; border-radius: 10px;
+  cursor: pointer; background: #fff; user-select: none;
+  transition: border-color .18s, background .18s, box-shadow .18s;
+}
+.s-opt-label:hover {
+  border-color: #93c5fd; background: #f0f7ff;
+}
+
+/* Custom indicator */
+.s-opt-icon {
+  width: 20px; height: 20px; flex-shrink: 0;
+  border: 2px solid #d1d5db; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .18s; margin-top: 1px;
+}
+.s-opt-icon.sq { border-radius: 5px; }
+
+.s-opt-icon::after {
+  content: ''; width: 8px; height: 8px;
+  border-radius: 50%; background: #1a5fd4;
+  opacity: 0; transform: scale(0);
+  transition: all .18s;
+}
+.s-opt-icon.sq::after {
+  content: '';
+  width: 10px; height: 6px;
+  border-radius: 0; background: none;
+  border-left: 2.5px solid #1a5fd4;
+  border-bottom: 2.5px solid #1a5fd4;
+  transform: rotate(-45deg) scale(0) translate(1px, -1px);
+  opacity: 0;
+}
+
+.s-opt input:checked + .s-opt-label {
+  border-color: #1a5fd4; background: #f0f7ff;
+  box-shadow: 0 0 0 1px rgba(26,95,212,.12);
+}
+.s-opt input:checked + .s-opt-label .s-opt-icon {
+  border-color: #1a5fd4; background: rgba(26,95,212,.1);
+}
+.s-opt input:checked + .s-opt-label .s-opt-icon::after {
+  opacity: 1; transform: scale(1);
+}
+.s-opt input[type=checkbox]:checked + .s-opt-label .s-opt-icon.sq::after {
+  opacity: 1;
+  transform: rotate(-45deg) scale(1) translate(1px, -1px);
+}
+
+.s-opt-text {
+  font-size: 14px; color: #374151; font-weight: 500;
+  line-height: 1.45; flex: 1;
+}
+.s-opt-text small { display: block; color: #9ca3af; font-weight: 400; font-size: 12px; margin-top: 2px; }
+
+/* Outro field */
+.s-outro {
+  display: none; margin-top: 7px; padding-left: 2px;
+}
+.s-outro.show { display: block; }
+.s-outro-input {
+  width: 100%; padding: 10px 14px;
+  border: 2px solid #93c5fd; border-radius: 8px;
+  font-size: 13.5px; color: #111827; font-family: inherit;
+  outline: none; background: #fff;
+  transition: border-color .2s, box-shadow .2s;
+}
+.s-outro-input:focus {
+  border-color: #1a5fd4;
+  box-shadow: 0 0 0 3px rgba(26,95,212,.08);
+}
+
+/* Selection limit toast */
+.s-limit {
+  font-size: 12px; color: #f59e0b; font-weight: 600;
+  margin-top: 7px; display: none;
+}
+.s-limit.show { display: block; }
+
+/* ─── Navigation ──────────────────────────────────────────────────────────── */
+.s-nav { padding: 4px 40px 36px; }
+
+.s-btn-next {
+  width: 100%; padding: 14px 24px;
+  background: linear-gradient(130deg, #0d2f70 0%, #1a5fd4 55%, #2178f0 100%);
+  color: #fff; border: none; border-radius: 11px;
+  font-size: 14.5px; font-weight: 700; cursor: pointer;
+  font-family: inherit; letter-spacing: .2px;
+  position: relative; overflow: hidden;
+  transition: transform .18s, box-shadow .18s, opacity .18s;
+}
+.s-btn-next::before {
+  content: ''; position: absolute;
+  top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
+  transform: skewX(-20deg);
+  transition: left .5s;
+}
+.s-btn-next:hover::before { left: 140%; }
+.s-btn-next:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(26,95,212,.38); }
+.s-btn-next:active { transform: translateY(0); }
+.s-btn-next:disabled {
+  background: #d1d5db; color: #9ca3af;
+  cursor: not-allowed; transform: none; box-shadow: none;
+}
+.s-btn-next:disabled::before { display: none; }
+
+.s-btn-back {
+  display: block; width: 100%; margin-top: 10px;
+  background: none; border: none; padding: 6px;
+  font-size: 13px; color: #b0b8c8; cursor: pointer;
+  font-family: inherit; text-align: center;
+  transition: color .18s;
+}
+.s-btn-back:hover { color: #6b7280; }
+
+/* ─── Thank you ───────────────────────────────────────────────────────────── */
+.s-thankyou {
+  display: none; text-align: center; padding: 64px 40px 56px;
+}
+.s-thankyou.active {
+  display: block;
+  animation: fadeUp .5s ease forwards;
+}
+.s-ty-icon {
+  width: 76px; height: 76px; margin: 0 auto 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d2f70, #2178f0);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 14px 36px rgba(26,95,212,.32);
+}
+.s-ty-icon svg { width: 34px; height: 34px; }
+.s-thankyou h2 {
+  font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 12px;
+}
+.s-thankyou p {
+  font-size: 14.5px; color: #6b7280; line-height: 1.65;
+  max-width: 380px; margin: 0 auto;
+}
+.s-ty-foot {
+  margin-top: 32px; font-size: 12px; color: #d1d5db; letter-spacing: .3px;
+}
+
+/* ─── Loading ─────────────────────────────────────────────────────────────── */
+.s-loading {
+  display: none; position: fixed; inset: 0;
+  background: rgba(5,14,32,.6); z-index: 9999;
+  align-items: center; justify-content: center;
+}
+.s-loading.show { display: flex; }
+.s-spinner {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.2);
+  border-top-color: #fff;
+  animation: spin .75s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 580px) {
+  #ecac-survey { padding: 0 0 56px; }
+  .s-card { border-radius: 0; box-shadow: none; }
+  .s-header { padding: 28px 22px 24px; }
+  .s-header h1 { font-size: 18px; }
+  .s-progress { padding: 16px 22px 0; }
+  .s-body { padding: 26px 22px 22px; }
+  .s-nav { padding: 4px 22px 30px; }
+  .s-thankyou { padding: 52px 22px 44px; }
+  .s-brand { margin-bottom: 0; display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="ecac-survey">
+
+  <!-- Brand badge -->
+  <div class="s-brand">
+    <span class="s-brand-dot"></span>
+    Confi &nbsp;·&nbsp; Pesquisa de Produto
+  </div>
+
+  <div class="s-card">
+
+    <!-- ── Header ── -->
+    <div class="s-header">
+      <div class="s-header-tag">Pesquisa Interna</div>
+      <h1>Novo módulo fiscal integrado ao e-CAC</h1>
+      <p>Confi está avaliando novos módulos para reduzir trabalho manual, automatizar processos e centralizar operações dentro da plataforma.</p>
+      <div class="s-header-meta">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Aproximadamente 2 minutos
+      </div>
+    </div>
+
+    <!-- ── Progress ── -->
+    <div class="s-progress" id="s-progress">
+      <div class="s-progress-row">
+        <span class="s-progress-label" id="s-prog-label">Etapa 1 de 13</span>
+        <span class="s-progress-pct"   id="s-prog-pct">7%</span>
+      </div>
+      <div class="s-progress-track">
+        <div class="s-progress-fill" id="s-prog-fill" style="width:7%"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ STEPS ══════════════════ -->
+    <div class="s-body" id="s-steps">
+
+      <!-- ── Etapa 1 — Identificação ── -->
+      <div class="s-step active" data-step="1">
+        <div class="s-step-indicator">
+          <div class="s-step-num">1</div>
+          <span class="s-step-name">Identificação</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Nome do escritório <span class="s-badge-req">Obrigatório</span></div>
+          <input type="text" class="s-input" id="q1" placeholder="Digite o nome do escritório..." autocomplete="organization">
+          <div class="s-error" id="q1-err">Por favor, informe o nome do escritório.</div>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Nome da pessoa responsável <span class="s-badge-req">Obrigatório</span></div>
+          <input type="text" class="s-input" id="q2" placeholder="Digite seu nome completo..." autocomplete="name">
+          <div class="s-error" id="q2-err">Por favor, informe o nome da pessoa responsável.</div>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">E-mail de contato <span class="s-badge-req">Obrigatório</span></div>
+          <input type="email" class="s-input" id="q25" placeholder="seuemail@exemplo.com" autocomplete="email">
+          <div class="s-error" id="q25-err">Por favor, informe um e-mail válido.</div>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Quantos usuários ativos existem hoje no escritório? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-opts">
+            <div class="s-opt"><input type="radio" name="q3" id="q3a" value="1 a 5"><label class="s-opt-label" for="q3a"><span class="s-opt-icon"></span><span class="s-opt-text">1 a 5</span></label></div>
+            <div class="s-opt"><input type="radio" name="q3" id="q3b" value="6 a 10"><label class="s-opt-label" for="q3b"><span class="s-opt-icon"></span><span class="s-opt-text">6 a 10</span></label></div>
+            <div class="s-opt"><input type="radio" name="q3" id="q3c" value="11 a 20"><label class="s-opt-label" for="q3c"><span class="s-opt-icon"></span><span class="s-opt-text">11 a 20</span></label></div>
+            <div class="s-opt"><input type="radio" name="q3" id="q3d" value="21 a 50"><label class="s-opt-label" for="q3d"><span class="s-opt-icon"></span><span class="s-opt-text">21 a 50</span></label></div>
+            <div class="s-opt"><input type="radio" name="q3" id="q3e" value="Mais de 50"><label class="s-opt-label" for="q3e"><span class="s-opt-icon"></span><span class="s-opt-text">Mais de 50</span></label></div>
+          </div>
+          <div class="s-error" id="q3-err">Por favor, selecione uma opção.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 2 — Uso Atual ── -->
+      <div class="s-step" data-step="2">
+        <div class="s-step-indicator">
+          <div class="s-step-num">2</div>
+          <span class="s-step-name">Uso Atual</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Hoje, quanto tempo operacional sua equipe gasta por mês com processos relacionados ao e-CAC/fiscal? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Selecione apenas uma opção</div>
+          <div class="s-opts">
+            <div class="s-opt"><input type="radio" name="q4" id="q4a" value="Menos de 5 horas"><label class="s-opt-label" for="q4a"><span class="s-opt-icon"></span><span class="s-opt-text">Menos de 5 horas</span></label></div>
+            <div class="s-opt"><input type="radio" name="q4" id="q4b" value="5 a 15 horas"><label class="s-opt-label" for="q4b"><span class="s-opt-icon"></span><span class="s-opt-text">5 a 15 horas</span></label></div>
+            <div class="s-opt"><input type="radio" name="q4" id="q4c" value="15 a 40 horas"><label class="s-opt-label" for="q4c"><span class="s-opt-icon"></span><span class="s-opt-text">15 a 40 horas</span></label></div>
+            <div class="s-opt"><input type="radio" name="q4" id="q4d" value="Mais de 40 horas"><label class="s-opt-label" for="q4d"><span class="s-opt-icon"></span><span class="s-opt-text">Mais de 40 horas</span></label></div>
+            <div class="s-opt"><input type="radio" name="q4" id="q4e" value="Não sei estimar"><label class="s-opt-label" for="q4e"><span class="s-opt-icon"></span><span class="s-opt-text">Não sei estimar</span></label></div>
+          </div>
+          <div class="s-error" id="q4-err">Por favor, selecione uma opção.</div>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Você usa alguma solução para automatizar parte (ou todo) esse trabalho? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Selecione apenas uma opção</div>
+          <div class="s-opts">
+            <div class="s-opt"><input type="radio" name="q5" id="q5a" value="Sim"><label class="s-opt-label" for="q5a"><span class="s-opt-icon"></span><span class="s-opt-text">Sim</span></label></div>
+            <div class="s-opt"><input type="radio" name="q5" id="q5b" value="Não"><label class="s-opt-label" for="q5b"><span class="s-opt-icon"></span><span class="s-opt-text">Não</span></label></div>
+          </div>
+          <div class="s-error" id="q5-err">Por favor, selecione uma opção.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 3 — Desafios Operacionais ── -->
+      <div class="s-step" data-step="3">
+        <div class="s-step-indicator">
+          <div class="s-step-num">3</div>
+          <span class="s-step-name">Desafios Operacionais</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Hoje, qual é o principal problema operacional relacionado ao e-CAC/fiscal? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Selecione até 2 opções</div>
+          <div class="s-opts" id="q6-list">
+            <div class="s-opt"><input type="checkbox" name="q6" id="q6a" value="Reemitir/atualizar guias manualmente"><label class="s-opt-label" for="q6a"><span class="s-opt-icon sq"></span><span class="s-opt-text">Reemitir/atualizar guias manualmente</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q6" id="q6b" value="Consultar situação fiscal"><label class="s-opt-label" for="q6b"><span class="s-opt-icon sq"></span><span class="s-opt-text">Consultar situação fiscal</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q6" id="q6c" value="Monitorar validade de CND federal"><label class="s-opt-label" for="q6c"><span class="s-opt-icon sq"></span><span class="s-opt-text">Monitorar validade de CND federal</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q6" id="q6d" value="Emitir/baixar CND federal"><label class="s-opt-label" for="q6d"><span class="s-opt-icon sq"></span><span class="s-opt-text">Emitir/baixar CND federal</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q6" id="q6e" value="Apuração de Parcelamentos e DAS MEI"><label class="s-opt-label" for="q6e"><span class="s-opt-icon sq"></span><span class="s-opt-text">Apuração de Parcelamentos e DAS MEI</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q6" id="q6f" value="FGTS Digital"><label class="s-opt-label" for="q6f"><span class="s-opt-icon sq"></span><span class="s-opt-text">FGTS Digital</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q6" id="q6g" value="Consultar DCTFWeb/MIT"><label class="s-opt-label" for="q6g"><span class="s-opt-icon sq"></span><span class="s-opt-text">Consultar DCTFWeb/MIT</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q6" id="q6h" value="Outro"><label class="s-opt-label" for="q6h"><span class="s-opt-icon sq"></span><span class="s-opt-text">Outro</span></label></div>
+          </div>
+          <div class="s-outro" id="q6-outro">
+            <input type="text" class="s-outro-input" id="q6-outro-val" placeholder="Descreva o problema operacional...">
+          </div>
+          <div class="s-limit" id="q6-limit">Limite de 2 seleções atingido.</div>
+          <div class="s-error" id="q6-err">Por favor, selecione ao menos uma opção.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 4 — Valor Percebido ── -->
+      <div class="s-step" data-step="4">
+        <div class="s-step-indicator">
+          <div class="s-step-num">4</div>
+          <span class="s-step-name">Valor Percebido</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Se a Confi tivesse integração automática com o e-CAC, isso geraria valor real para o escritório? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Selecione apenas uma opção</div>
+          <div class="s-opts">
+            <div class="s-opt"><input type="radio" name="q7" id="q7a" value="Sim, muito valor"><label class="s-opt-label" for="q7a"><span class="s-opt-icon"></span><span class="s-opt-text">Sim, muito valor</span></label></div>
+            <div class="s-opt"><input type="radio" name="q7" id="q7b" value="Sim, algum valor"><label class="s-opt-label" for="q7b"><span class="s-opt-icon"></span><span class="s-opt-text">Sim, algum valor</span></label></div>
+            <div class="s-opt"><input type="radio" name="q7" id="q7c" value="Pouco valor"><label class="s-opt-label" for="q7c"><span class="s-opt-icon"></span><span class="s-opt-text">Pouco valor</span></label></div>
+            <div class="s-opt"><input type="radio" name="q7" id="q7d" value="Nenhum valor"><label class="s-opt-label" for="q7d"><span class="s-opt-icon"></span><span class="s-opt-text">Nenhum valor</span></label></div>
+          </div>
+          <div class="s-error" id="q7-err">Por favor, selecione uma opção.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 5 — Disposição de Compra ── -->
+      <div class="s-step" data-step="5">
+        <div class="s-step-indicator">
+          <div class="s-step-num">5</div>
+          <span class="s-step-name">Disposição de Compra</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">O escritório pagaria por um módulo fiscal integrado ao e-CAC dentro da Confi? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Selecione apenas uma opção</div>
+          <div class="s-opts">
+            <div class="s-opt"><input type="radio" name="q8" id="q8a" value="Sim, com certeza"><label class="s-opt-label" for="q8a"><span class="s-opt-icon"></span><span class="s-opt-text">Sim, com certeza</span></label></div>
+            <div class="s-opt"><input type="radio" name="q8" id="q8b" value="Sim, dependendo do valor"><label class="s-opt-label" for="q8b"><span class="s-opt-icon"></span><span class="s-opt-text">Sim, dependendo do valor</span></label></div>
+            <div class="s-opt"><input type="radio" name="q8" id="q8c" value="Talvez"><label class="s-opt-label" for="q8c"><span class="s-opt-icon"></span><span class="s-opt-text">Talvez</span></label></div>
+            <div class="s-opt"><input type="radio" name="q8" id="q8d" value="Não vejo valor suficiente hoje"><label class="s-opt-label" for="q8d"><span class="s-opt-icon"></span><span class="s-opt-text">Não vejo valor suficiente hoje</span></label></div>
+          </div>
+          <div class="s-error" id="q8-err">Por favor, selecione uma opção.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 6 — Módulo de Atualização ── -->
+      <div class="s-step" data-step="6">
+        <div class="s-step-indicator">
+          <div class="s-step-num">6</div>
+          <span class="s-step-name">Módulo de Atualização/Recálculo</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Dentro do módulo de Atualização/Recálculo, o que teria maior valor? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Selecione até 2 opções</div>
+          <div class="s-opts" id="q9-list">
+            <div class="s-opt"><input type="checkbox" name="q9" id="q9a" value="Atualizar/reemitir DAS automaticamente"><label class="s-opt-label" for="q9a"><span class="s-opt-icon sq"></span><span class="s-opt-text">Atualizar/reemitir DAS automaticamente</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q9" id="q9b" value="Atualizar/reemitir DARF automaticamente"><label class="s-opt-label" for="q9b"><span class="s-opt-icon sq"></span><span class="s-opt-text">Atualizar/reemitir DARF automaticamente</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q9" id="q9c" value="Consultar DCTFWeb/MIT e gerar/reemitir DARF"><label class="s-opt-label" for="q9c"><span class="s-opt-icon sq"></span><span class="s-opt-text">Consultar DCTFWeb/MIT e gerar/reemitir DARF</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q9" id="q9d" value="FGTS Digital"><label class="s-opt-label" for="q9d"><span class="s-opt-icon sq"></span><span class="s-opt-text">FGTS Digital</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q9" id="q9e" value="Acompanhar parcelamentos federais"><label class="s-opt-label" for="q9e"><span class="s-opt-icon sq"></span><span class="s-opt-text">Acompanhar parcelamentos federais</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q9" id="q9f" value="Acompanhar dívida ativa/PGFN"><label class="s-opt-label" for="q9f"><span class="s-opt-icon sq"></span><span class="s-opt-text">Acompanhar dívida ativa/PGFN</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q9" id="q9g" value="Outro"><label class="s-opt-label" for="q9g"><span class="s-opt-icon sq"></span><span class="s-opt-text">Outro</span></label></div>
+          </div>
+          <div class="s-outro" id="q9-outro">
+            <input type="text" class="s-outro-input" id="q9-outro-val" placeholder="Descreva o que teria valor para você...">
+          </div>
+          <div class="s-limit" id="q9-limit">Limite de 2 seleções atingido.</div>
+          <div class="s-error" id="q9-err">Por favor, selecione ao menos uma opção.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 7 — Módulo de Consulta Fiscal ── -->
+      <div class="s-step" data-step="7">
+        <div class="s-step-indicator">
+          <div class="s-step-num">7</div>
+          <span class="s-step-name">Módulo de Consulta Fiscal</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Dentro do módulo de Consulta Fiscal, o que teria maior valor? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Selecione até 2 opções</div>
+          <div class="s-opts" id="q10-list">
+            <div class="s-opt"><input type="checkbox" name="q10" id="q10a" value="Situação Fiscal / SITFIS"><label class="s-opt-label" for="q10a"><span class="s-opt-icon sq"></span><span class="s-opt-text">Situação Fiscal / SITFIS</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q10" id="q10b" value="Consulta DAS / PGDAS-D"><label class="s-opt-label" for="q10b"><span class="s-opt-icon sq"></span><span class="s-opt-text">Consulta DAS / PGDAS-D</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q10" id="q10c" value="Consulta DARF e pagamentos"><label class="s-opt-label" for="q10c"><span class="s-opt-icon sq"></span><span class="s-opt-text">Consulta DARF e pagamentos</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q10" id="q10d" value="DCTFWeb / MIT"><label class="s-opt-label" for="q10d"><span class="s-opt-icon sq"></span><span class="s-opt-text">DCTFWeb / MIT</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q10" id="q10e" value="Caixa Postal e-CAC"><label class="s-opt-label" for="q10e"><span class="s-opt-icon sq"></span><span class="s-opt-text">Caixa Postal e-CAC</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q10" id="q10f" value="Consulta de comprovantes"><label class="s-opt-label" for="q10f"><span class="s-opt-icon sq"></span><span class="s-opt-text">Consulta de comprovantes</span></label></div>
+            <div class="s-opt"><input type="checkbox" name="q10" id="q10g" value="e-Processos"><label class="s-opt-label" for="q10g"><span class="s-opt-icon sq"></span><span class="s-opt-text">e-Processos</span></label></div>
+          </div>
+          <div class="s-limit" id="q10-limit">Limite de 2 seleções atingido.</div>
+          <div class="s-error" id="q10-err">Por favor, selecione ao menos uma opção.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 8 — Automação ── -->
+      <div class="s-step" data-step="8">
+        <div class="s-step-indicator">
+          <div class="s-step-num">8</div>
+          <span class="s-step-name">Automação</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Qual automação teria <strong>MAIS</strong> impacto operacional no dia a dia? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Selecione apenas uma opção</div>
+          <div class="s-opts">
+            <div class="s-opt"><input type="radio" name="q11" id="q11a" value="Buscar guias automaticamente"><label class="s-opt-label" for="q11a"><span class="s-opt-icon"></span><span class="s-opt-text">Buscar guias automaticamente</span></label></div>
+            <div class="s-opt"><input type="radio" name="q11" id="q11b" value="Recalcular guias vencidas automaticamente"><label class="s-opt-label" for="q11b"><span class="s-opt-icon"></span><span class="s-opt-text">Recalcular guias vencidas automaticamente</span></label></div>
+            <div class="s-opt"><input type="radio" name="q11" id="q11c" value="Enviar guias automaticamente ao cliente"><label class="s-opt-label" for="q11c"><span class="s-opt-icon"></span><span class="s-opt-text">Enviar guias automaticamente ao cliente</span></label></div>
+            <div class="s-opt"><input type="radio" name="q11" id="q11d" value="Monitorar pendências fiscais automaticamente"><label class="s-opt-label" for="q11d"><span class="s-opt-icon"></span><span class="s-opt-text">Monitorar pendências fiscais automaticamente</span></label></div>
+            <div class="s-opt"><input type="radio" name="q11" id="q11e" value="Alertar vencimentos automaticamente"><label class="s-opt-label" for="q11e"><span class="s-opt-icon"></span><span class="s-opt-text">Alertar vencimentos automaticamente</span></label></div>
+            <div class="s-opt"><input type="radio" name="q11" id="q11f" value="Monitorar vencimento de CND automaticamente"><label class="s-opt-label" for="q11f"><span class="s-opt-icon"></span><span class="s-opt-text">Monitorar vencimento de CND automaticamente</span></label></div>
+          </div>
+          <div class="s-error" id="q11-err">Por favor, selecione uma opção.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 9 — Prioridade de Grupo ── -->
+      <div class="s-step" data-step="9">
+        <div class="s-step-indicator">
+          <div class="s-step-num">9</div>
+          <span class="s-step-name">Prioridade de Desenvolvimento</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Se fosse para escolher UM grupo para a Confi desenvolver primeiro, qual seria? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Selecione apenas uma opção</div>
+          <div class="s-opts">
+            <div class="s-opt">
+              <input type="radio" name="q12" id="q12a" value="Grupo 1 - Consulta Fiscal">
+              <label class="s-opt-label" for="q12a">
+                <span class="s-opt-icon"></span>
+                <span class="s-opt-text"><strong>Grupo 1 — Consulta Fiscal</strong><small>consultas fiscais, situação fiscal e anexos automáticos nas tarefas</small></span>
+              </label>
+            </div>
+            <div class="s-opt">
+              <input type="radio" name="q12" id="q12b" value="Grupo 2 - Guias e Recálculo">
+              <label class="s-opt-label" for="q12b">
+                <span class="s-opt-icon"></span>
+                <span class="s-opt-text"><strong>Grupo 2 — Guias e Recálculo</strong><small>atualização automática de DAS, DARF, DCTFWeb/MIT, FGTS e parcelamentos</small></span>
+              </label>
+            </div>
+            <div class="s-opt">
+              <input type="radio" name="q12" id="q12c" value="Grupo 3 - DAS/Simples">
+              <label class="s-opt-label" for="q12c">
+                <span class="s-opt-icon"></span>
+                <span class="s-opt-text"><strong>Grupo 3 — DAS/Simples</strong><small>situação fiscal, consultas DAS/PGDAS, recálculo e parcelamentos DAS/MEI</small></span>
+              </label>
+            </div>
+            <div class="s-opt">
+              <input type="radio" name="q12" id="q12d" value="Grupo 4 - DARF Contribuições">
+              <label class="s-opt-label" for="q12d">
+                <span class="s-opt-icon"></span>
+                <span class="s-opt-text"><strong>Grupo 4 — DARF Contribuições</strong><small>consulta, situação fiscal e recálculo de DARF contribuições</small></span>
+              </label>
+            </div>
+          </div>
+          <div class="s-error" id="q12-err">Por favor, selecione uma opção.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 10 — Funcionalidade Prioritária ── -->
+      <div class="s-step" data-step="10">
+        <div class="s-step-indicator">
+          <div class="s-step-num">10</div>
+          <span class="s-step-name">Funcionalidade Prioritária</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Se pudesse escolher apenas UMA funcionalidade para a Confi desenvolver primeiro, qual seria? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Resposta descritiva (até 200 caracteres)</div>
+          <textarea class="s-textarea" id="q13" rows="3" maxlength="200" placeholder="Descreva a funcionalidade mais importante para o seu escritório..."></textarea>
+          <div class="s-char-count"><span id="q13-cnt">0</span>/200</div>
+          <div class="s-error" id="q13-err">Por favor, descreva a funcionalidade desejada.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 11 — Ferramentas Atuais ── -->
+      <div class="s-step" data-step="11">
+        <div class="s-step-indicator">
+          <div class="s-step-num">11</div>
+          <span class="s-step-name">Ferramentas Atuais</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Hoje, quais ferramentas vocês utilizam para consulta fiscal, recálculo de guias ou monitoramento? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Resposta descritiva (até 200 caracteres)</div>
+          <textarea class="s-textarea" id="q14" rows="3" maxlength="200" placeholder="Ex: Domínio, Questor, planilhas Excel, acesso manual ao e-CAC..."></textarea>
+          <div class="s-char-count"><span id="q14-cnt">0</span>/200</div>
+          <div class="s-error" id="q14-err">Por favor, descreva as ferramentas utilizadas.</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 12 — Sugestões ── -->
+      <div class="s-step" data-step="12">
+        <div class="s-step-indicator">
+          <div class="s-step-num">12</div>
+          <span class="s-step-name">Sugestões</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Existe alguma funcionalidade importante que não foi citada acima? <span class="s-badge-opt">Optativo</span></div>
+          <div class="s-q-hint">Resposta descritiva (até 200 caracteres)</div>
+          <textarea class="s-textarea" id="q15" rows="3" maxlength="200" placeholder="Compartilhe qualquer sugestão ou funcionalidade adicional..."></textarea>
+          <div class="s-char-count"><span id="q15-cnt">0</span>/200</div>
+        </div>
+      </div>
+
+      <!-- ── Etapa 13 — Grupo de Testes ── -->
+      <div class="s-step" data-step="13">
+        <div class="s-step-indicator">
+          <div class="s-step-num">13</div>
+          <span class="s-step-name">Grupo de Testes</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">Se criarmos uma integração, você quer participar do grupo de teste? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint">Selecione apenas uma opção</div>
+          <div class="s-opts">
+            <div class="s-opt"><input type="radio" name="q16" id="q16a" value="Sim"><label class="s-opt-label" for="q16a"><span class="s-opt-icon"></span><span class="s-opt-text">Sim</span></label></div>
+            <div class="s-opt"><input type="radio" name="q16" id="q16b" value="Não"><label class="s-opt-label" for="q16b"><span class="s-opt-icon"></span><span class="s-opt-text">Não</span></label></div>
+            <div class="s-opt"><input type="radio" name="q16" id="q16c" value="Talvez"><label class="s-opt-label" for="q16c"><span class="s-opt-icon"></span><span class="s-opt-text">Talvez</span></label></div>
+          </div>
+          <div class="s-error" id="q16-err">Por favor, selecione uma opção.</div>
+        </div>
+      </div>
+
+    </div><!-- /s-steps -->
+
+    <!-- ── Navigation ── -->
+    <div class="s-nav" id="s-nav">
+      <button class="s-btn-next" id="s-btn-next" disabled>Avançar →</button>
+      <button class="s-btn-back" id="s-btn-back" style="display:none">← Voltar</button>
+    </div>
+
+    <!-- ── Thank you ── -->
+    <div class="s-thankyou" id="s-thankyou">
+      <div class="s-ty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"/>
+        </svg>
+      </div>
+      <h2>Obrigado pela sua resposta!</h2>
+      <p>Sua participação é muito importante para o desenvolvimento do novo módulo fiscal da Confi. Em breve entraremos em contato.</p>
+      <div class="s-ty-foot">Confi · Pesquisa de Produto 2025</div>
+    </div>
+
+  </div><!-- /s-card -->
+</div><!-- /ecac-survey -->
+
+<!-- Loading overlay -->
+<div class="s-loading" id="s-loading"><div class="s-spinner"></div></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var TOTAL = 13;
+  var step  = 1;
+
+  /* Endpoint — assembled at runtime */
+  var _e = ['https://', 'n8n', '.confi', '.app', '.br', '/webhook', '/ecac-form'];
+  var ep  = function () { return _e.join(''); };
+
+  /* ── Helpers ─────────────────────────────────────────────── */
+  var $  = function (id) { return document.getElementById(id); };
+  var $$ = function (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); };
+  var radVal = function (n) { var el = document.querySelector('input[name="' + n + '"]:checked'); return el ? el.value : ''; };
+  var cbVals  = function (n) { return $$('input[name="' + n + '"]:checked').map(function (e) { return e.value; }); };
+  var isEmail = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); };
+
+  function showErr(id)  { var e = $(id); if (e) { e.classList.add('show'); } }
+  function hideErr(id)  { var e = $(id); if (e) { e.classList.remove('show'); } }
+  function setInput(id, ok) { var e = $(id); if (e) { e.classList.toggle('has-error', !ok); } }
+
+  /* ── Validation per step ─────────────────────────────────── */
+  function isValid(s) {
+    switch (s) {
+      case 1:  return $('q1').value.trim() && $('q2').value.trim() &&
+                      isEmail($('q25').value.trim()) && radVal('q3');
+      case 2:  return radVal('q4') && radVal('q5');
+      case 3:  return cbVals('q6').length > 0;
+      case 4:  return !!radVal('q7');
+      case 5:  return !!radVal('q8');
+      case 6:  return cbVals('q9').length > 0;
+      case 7:  return cbVals('q10').length > 0;
+      case 8:  return !!radVal('q11');
+      case 9:  return !!radVal('q12');
+      case 10: return !!$('q13').value.trim();
+      case 11: return !!$('q14').value.trim();
+      case 12: return true;
+      case 13: return !!radVal('q16');
+    }
+    return false;
+  }
+
+  function showErrors(s) {
+    var ok = true;
+    if (s === 1) {
+      var q1ok = !!$('q1').value.trim();  setInput('q1', q1ok);  q1ok ? hideErr('q1-err') : (showErr('q1-err'), ok = false);
+      var q2ok = !!$('q2').value.trim();  setInput('q2', q2ok);  q2ok ? hideErr('q2-err') : (showErr('q2-err'), ok = false);
+      var q25v = $('q25').value.trim();
+      var q25ok = q25v && isEmail(q25v);  setInput('q25', !!q25ok); q25ok ? hideErr('q25-err') : (showErr('q25-err'), ok = false);
+      radVal('q3') ? hideErr('q3-err') : (showErr('q3-err'), ok = false);
+    } else if (s === 2) {
+      radVal('q4') ? hideErr('q4-err') : (showErr('q4-err'), ok = false);
+      radVal('q5') ? hideErr('q5-err') : (showErr('q5-err'), ok = false);
+    } else if (s === 3) {
+      cbVals('q6').length ? hideErr('q6-err') : (showErr('q6-err'), ok = false);
+    } else if (s === 4) {
+      radVal('q7') ? hideErr('q7-err') : (showErr('q7-err'), ok = false);
+    } else if (s === 5) {
+      radVal('q8') ? hideErr('q8-err') : (showErr('q8-err'), ok = false);
+    } else if (s === 6) {
+      cbVals('q9').length ? hideErr('q9-err') : (showErr('q9-err'), ok = false);
+    } else if (s === 7) {
+      cbVals('q10').length ? hideErr('q10-err') : (showErr('q10-err'), ok = false);
+    } else if (s === 8) {
+      radVal('q11') ? hideErr('q11-err') : (showErr('q11-err'), ok = false);
+    } else if (s === 9) {
+      radVal('q12') ? hideErr('q12-err') : (showErr('q12-err'), ok = false);
+    } else if (s === 10) {
+      $('q13').value.trim() ? hideErr('q13-err') : (showErr('q13-err'), ok = false);
+    } else if (s === 11) {
+      $('q14').value.trim() ? hideErr('q14-err') : (showErr('q14-err'), ok = false);
+    } else if (s === 13) {
+      radVal('q16') ? hideErr('q16-err') : (showErr('q16-err'), ok = false);
+    }
+    return ok;
+  }
+
+  /* ── Progress ────────────────────────────────────────────── */
+  function updateProgress(s) {
+    var pct = Math.round(s / TOTAL * 100);
+    $('s-prog-label').textContent = 'Etapa ' + s + ' de ' + TOTAL;
+    $('s-prog-pct').textContent   = pct + '%';
+    $('s-prog-fill').style.width  = pct + '%';
+  }
+
+  /* ── Show step ───────────────────────────────────────────── */
+  function showStep(s) {
+    $$('.s-step').forEach(function (el) { el.classList.remove('active'); });
+    var target = document.querySelector('[data-step="' + s + '"]');
+    if (target) target.classList.add('active');
+    updateProgress(s);
+    $('s-btn-back').style.display = s > 1 ? 'block' : 'none';
+    $('s-btn-next').textContent   = s === TOTAL ? 'Enviar pesquisa ✓' : 'Avançar →';
+    checkBtn();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function checkBtn() {
+    $('s-btn-next').disabled = !isValid(step);
+  }
+
+  /* ── Navigation ──────────────────────────────────────────── */
+  $('s-btn-next').addEventListener('click', function () {
+    if (!showErrors(step)) return;
+    if (step === TOTAL) { submitForm(); return; }
+    step++;
+    showStep(step);
+  });
+
+  $('s-btn-back').addEventListener('click', function () {
+    if (step > 1) { step--; showStep(step); }
+  });
+
+  /* ── Auto-advance for single-radio steps ─────────────────── */
+  var autoSteps = { 4: 'q7', 5: 'q8', 8: 'q11', 9: 'q12', 13: null };
+  /* steps 2 also auto-advances when both q4+q5 done */
+  $$('input[type=radio]').forEach(function (el) {
+    el.addEventListener('change', function () {
+      checkBtn();
+      var name = el.name;
+      /* single-question radio steps */
+      if (['q7','q8','q11','q12'].indexOf(name) !== -1 && isValid(step)) {
+        setTimeout(function () {
+          if (step !== TOTAL) { step++; showStep(step); }
+        }, 420);
+      }
+      /* step 2: advance when both answered */
+      if ((name === 'q4' || name === 'q5') && isValid(2)) {
+        setTimeout(function () {
+          if (step === 2) { step++; showStep(step); }
+        }, 420);
+      }
+    });
+  });
+
+  /* ── Checkbox limits ─────────────────────────────────────── */
+  function setupCb(name, max, limitId, outroId) {
+    $$('input[name="' + name + '"]').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var checked = $$('input[name="' + name + '"]:checked');
+        if (checked.length > max) {
+          cb.checked = false;
+          var lim = $(limitId);
+          if (lim) { lim.classList.add('show'); setTimeout(function () { lim.classList.remove('show'); }, 2400); }
+          return;
+        }
+        if (outroId) {
+          var hasOtro = $$('input[name="' + name + '"]:checked').some(function (e) { return e.value === 'Outro'; });
+          $(outroId).classList.toggle('show', hasOtro);
+        }
+        checkBtn();
+      });
+    });
+  }
+  setupCb('q6',  2, 'q6-limit',  'q6-outro');
+  setupCb('q9',  2, 'q9-limit',  'q9-outro');
+  setupCb('q10', 2, 'q10-limit', null);
+
+  /* ── Text inputs → live check ────────────────────────────── */
+  $$('#q1, #q2, #q25').forEach(function (el) {
+    el.addEventListener('input', checkBtn);
+  });
+  $('q25').addEventListener('blur', function () {
+    var ok = isEmail(this.value.trim());
+    setInput('q25', !this.value || ok);
+    this.value && !ok ? showErr('q25-err') : hideErr('q25-err');
+    checkBtn();
+  });
+
+  /* ── Textarea char counters ──────────────────────────────── */
+  [['q13','q13-cnt'], ['q14','q14-cnt'], ['q15','q15-cnt']].forEach(function (pair) {
+    var ta = $(pair[0]), cnt = $(pair[1]);
+    if (ta && cnt) {
+      ta.addEventListener('input', function () { cnt.textContent = ta.value.length; checkBtn(); });
+    }
+  });
+
+  /* ── Collect data ────────────────────────────────────────── */
+  function collect() {
+    var q6 = cbVals('q6').filter(function(v){return v!=='Outro';});
+    if (cbVals('q6').indexOf('Outro')!==-1) {
+      var ov6 = $('q6-outro-val').value.trim();
+      q6.push(ov6 ? 'Outro: ' + ov6 : 'Outro');
+    }
+    var q9 = cbVals('q9').filter(function(v){return v!=='Outro';});
+    if (cbVals('q9').indexOf('Outro')!==-1) {
+      var ov9 = $('q9-outro-val').value.trim();
+      q9.push(ov9 ? 'Outro: ' + ov9 : 'Outro');
+    }
+    return {
+      escritorio:                 $('q1').value.trim(),
+      responsavel:                $('q2').value.trim(),
+      email:                      $('q25').value.trim(),
+      usuarios_ativos:            radVal('q3'),
+      tempo_ecac_mensal:          radVal('q4'),
+      usa_automacao:              radVal('q5'),
+      problema_operacional:       q6,
+      valor_integracao_ecac:      radVal('q7'),
+      pagaria_modulo:             radVal('q8'),
+      modulo_atualizacao_valor:   q9,
+      modulo_consulta_fiscal:     cbVals('q10'),
+      automacao_mais_impacto:     radVal('q11'),
+      grupo_prioridade:           radVal('q12'),
+      funcionalidade_prioritaria: $('q13').value.trim(),
+      ferramentas_atuais:         $('q14').value.trim(),
+      funcionalidade_adicional:   $('q15').value.trim(),
+      participar_grupo_teste:     radVal('q16'),
+      timestamp:                  new Date().toISOString()
+    };
+  }
+
+  /* ── Submit ──────────────────────────────────────────────── */
+  function submitForm() {
+    var payload = collect();
+    $('s-loading').classList.add('show');
+    fetch(ep(), {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload)
+    })
+    .catch(function () { /* silent — show thank you regardless */ })
+    .finally(function () {
+      $('s-loading').classList.remove('show');
+      showThankyou();
+    });
+  }
+
+  function showThankyou() {
+    $('s-progress').style.display = 'none';
+    $('s-steps').style.display    = 'none';
+    $('s-nav').style.display      = 'none';
+    $('s-thankyou').classList.add('active');
+  }
+
+  /* ── Init ────────────────────────────────────────────────── */
+  showStep(1);
+})();
+</script>
+</body>
+</html>
