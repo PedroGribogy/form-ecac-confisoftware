@@ -1021,8 +1021,8 @@ main, article, .hentry, .site-inner, .content-area,
     formEnviado = true; // Impede disparo duplo via evento de saída da página
     
     var payload = collect();
-    payload.abandonado = false;
-    payload.etapa_parada = step; // Etapa final
+    payload.abandonado = 'Não';
+    payload.etapa_parada = step.toString(); // Etapa final
 
     $('s-loading').classList.add('show');
     fetch(ep(), {
@@ -1044,55 +1044,66 @@ main, article, .hentry, .site-inner, .content-area,
   }
 
   /* ── Memória em Tempo Real ───────────────────────────────── */
-  var payloadEmMemoria = {};
-  
-  // Atualiza a "foto" do formulário a cada letra digitada ou clique
-  document.addEventListener('input', function() { payloadEmMemoria = collect(); });
-  document.addEventListener('change', function() { payloadEmMemoria = collect(); });
+  var payloadEmMemoria = null;
+  var interagiu = false;
 
-  /* ── Captura de Abandono ─────────────────────────────────── */
-  function registrarAbandono() {
-    if (formEnviado) return;
-    formEnviado = true;
-
-    // Em vez de ler o formulário que está sendo destruído, pegamos a última foto salva!
-    var payload = payloadEmMemoria; 
+  function salvarMemoria() {
+    var dados = collect();
+    var preenchido = false;
     
-    // Fallback de segurança se estiver vazio
-    if (Object.keys(payload).length === 0) {
-        payload = collect();
+    // Varre todos os dados (ignorando o timestamp) para ver se há pelo menos um campo com valor
+    for (var key in dados) {
+      if (key === 'timestamp') continue;
+      if (Array.isArray(dados[key]) && dados[key].length > 0) preenchido = true;
+      else if (typeof dados[key] === 'string' && dados[key].trim() !== '') preenchido = true;
     }
 
-    payload.abandonado = true;
-    payload.etapa_parada = step; // A variável step não é destruída, então é seguro ler
-
-    var jsonPayload = JSON.stringify(payload);
-
-    try {
-      fetch(ep(), {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: jsonPayload,
-        keepalive: true
-      }).catch(function(){});
-    } catch (e) {
-      var blob = new Blob([jsonPayload], { type: 'text/plain' });
-      navigator.sendBeacon(ep(), blob);
+    // Só sobrescreve a memória se tiver conteúdo
+    if (preenchido) {
+      interagiu = true;
+      payloadEmMemoria = dados;
     }
   }
 
-  // Cobre mudança de abas/minimizar app (especialmente em celulares e Safari)
+  document.addEventListener('input', salvarMemoria, true);
+  document.addEventListener('change', salvarMemoria, true);
+
+  /* ── Captura de Abandono ─────────────────────────────────── */
+  function registrarAbandono() {
+    if (formEnviado || !interagiu || !payloadEmMemoria) return;
+    formEnviado = true; 
+
+    // Cópia limpa
+    var payload = JSON.parse(JSON.stringify(payloadEmMemoria)); 
+
+    payload.abandonado = 'Sim';
+    payload.etapa_parada = step.toString(); 
+
+    // Formatando os dados como form-urlencoded para o n8n ler nativamente e passar no CORS
+    var data = new URLSearchParams();
+    for (var key in payload) {
+      var val = payload[key];
+      if (Array.isArray(val)) {
+        data.append(key, val.join(', '));
+      } else {
+        data.append(key, val || '');
+      }
+    }
+
+    navigator.sendBeacon(ep(), data);
+  }
+
+  // Cobre mudança de abas/minimizar app
   document.addEventListener('visibilitychange', function() {
     if (document.visibilityState === 'hidden') registrarAbandono();
   });
   
-  // Cobre botões de recarregar F5, voltar, e fechar janelas no desktop
+  // Cobre F5 e fechar abas
   window.addEventListener('pagehide', registrarAbandono);
   window.addEventListener('beforeunload', registrarAbandono);
 
   /* ── Init ────────────────────────────────────────────────── */
   showStep(1);
-  payloadEmMemoria = collect(); // Foto inicial
 })();
 </script>
 </body>
