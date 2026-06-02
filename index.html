@@ -795,6 +795,7 @@ main, article, .hentry, .site-inner, .content-area,
 
   var TOTAL = 14;
   var step  = 1;
+  var formEnviado = false; // Controle de abandono
 
   /* Endpoint — assembled at runtime */
   var _e = ['https://', 'n8n', '.confi', '.app', '.br', '/webhook', '/ecac-form'];
@@ -1015,9 +1016,14 @@ main, article, .hentry, .site-inner, .content-area,
     };
   }
 
-  /* ── Submit ──────────────────────────────────────────────── */
+  /* ── Submit Normal ───────────────────────────────────────── */
   function submitForm() {
+    formEnviado = true; // Impede disparo duplo via evento de saída da página
+    
     var payload = collect();
+    payload.abandonado = false;
+    payload.etapa_parada = step; // Etapa 14 (finalizada)
+
     $('s-loading').classList.add('show');
     fetch(ep(), {
       method:  'POST',
@@ -1036,6 +1042,20 @@ main, article, .hentry, .site-inner, .content-area,
     $('s-nav').style.display      = 'none';
     $('s-thankyou').classList.add('active');
   }
+
+  /* ── Captura de Abandono ─────────────────────────────────── */
+  document.addEventListener('visibilitychange', function() {
+    // Se a aba for fechada/oculta e o form ainda não foi finalizado com sucesso
+    if (document.visibilityState === 'hidden' && !formEnviado) {
+      var payload = collect();
+      payload.abandonado = true;
+      payload.etapa_parada = step; // Registra a última tela vista
+      
+      // Blob usado com Beacon garante o Type 'application/json' antes da página morrer
+      var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+      navigator.sendBeacon(ep(), blob);
+    }
+  });
 
   /* ── Init ────────────────────────────────────────────────── */
   showStep(1);
