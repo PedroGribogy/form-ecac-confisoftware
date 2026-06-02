@@ -49,9 +49,13 @@ main, article, .hentry, .site-inner, .content-area,
   margin-bottom: 28px;
 }
 .s-logo-main {
-  color: #fff; font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px;
+  display: flex; align-items: center; justify-content: center;
 }
-.s-logo-main svg { width: 28px; height: 28px; }
+.s-logo-main img { 
+  height: 38px; /* Ajuste a altura da logo conforme necessário */
+  width: auto;
+  object-fit: contain;
+}
 
 .s-brand {
   display: inline-flex; align-items: center; gap: 8px;
@@ -410,8 +414,7 @@ main, article, .hentry, .site-inner, .content-area,
 
   <div class="s-top-bar">
     <div class="s-logo-main">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-      Confi
+      <img src="https://drive.google.com/uc?id=1Mut_3M-YYdJPqkZ7GHMG9AjrNd-H-y9O" alt="Logo Confi">
     </div>
     <div class="s-brand">
       <span class="s-brand-dot"></span>
@@ -783,7 +786,9 @@ main, article, .hentry, .site-inner, .content-area,
         </div>
       </div>
 
-    </div><div class="s-nav" id="s-nav">
+    </div>
+    
+    <div class="s-nav" id="s-nav">
       <button class="s-btn-next" id="s-btn-next" disabled>Avançar →</button>
       <button class="s-btn-back" id="s-btn-back" style="display:none">← Voltar</button>
     </div>
@@ -799,7 +804,10 @@ main, article, .hentry, .site-inner, .content-area,
       <div class="s-ty-foot">Confi · Pesquisa de Produto 2026</div>
     </div>
 
-  </div></div><div class="s-loading" id="s-loading"><div class="s-spinner"></div></div>
+  </div>
+</div>
+
+<div class="s-loading" id="s-loading"><div class="s-spinner"></div></div>
 
 <script>
 (function () {
