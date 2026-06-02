@@ -1022,7 +1022,7 @@ main, article, .hentry, .site-inner, .content-area,
     
     var payload = collect();
     payload.abandonado = false;
-    payload.etapa_parada = step; // Etapa 14 (finalizada)
+    payload.etapa_parada = step; // Etapa final
 
     $('s-loading').classList.add('show');
     fetch(ep(), {
@@ -1044,18 +1044,41 @@ main, article, .hentry, .site-inner, .content-area,
   }
 
   /* ── Captura de Abandono ─────────────────────────────────── */
-  document.addEventListener('visibilitychange', function() {
-    // Se a aba for fechada/oculta e o form ainda não foi finalizado com sucesso
-    if (document.visibilityState === 'hidden' && !formEnviado) {
-      var payload = collect();
-      payload.abandonado = true;
-      payload.etapa_parada = step; // Registra a última tela vista
-      
-      // Blob usado com Beacon garante o Type 'application/json' antes da página morrer
-      var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+  function registrarAbandono() {
+    if (formEnviado) return;
+    formEnviado = true; // Impede disparos múltiplos se vários eventos ocorrerem
+
+    var payload = collect();
+    payload.abandonado = true;
+    payload.etapa_parada = step;
+
+    var jsonPayload = JSON.stringify(payload);
+
+    try {
+      // O fetch com keepalive é a forma moderna.
+      // Usar text/plain evita que o navegador exija "Preflight (OPTIONS)" antes de fechar a aba, 
+      // garantindo o envio.
+      fetch(ep(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: jsonPayload,
+        keepalive: true
+      }).catch(function(){});
+    } catch (e) {
+      // Fallback para navegadores antigos
+      var blob = new Blob([jsonPayload], { type: 'text/plain' });
       navigator.sendBeacon(ep(), blob);
     }
+  }
+
+  // Cobre mudança de abas/minimizar app (especialmente em celulares e Safari)
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') registrarAbandono();
   });
+  
+  // Cobre botões de recarregar F5, voltar, e fechar janelas no desktop
+  window.addEventListener('pagehide', registrarAbandono);
+  window.addEventListener('beforeunload', registrarAbandono);
 
   /* ── Init ────────────────────────────────────────────────── */
   showStep(1);
