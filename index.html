@@ -48,14 +48,6 @@ main, article, .hentry, .site-inner, .content-area,
   display: flex; flex-direction: column; align-items: center; gap: 16px;
   margin-bottom: 28px;
 }
-.s-logo-main {
-  display: flex; align-items: center; justify-content: center;
-}
-.s-logo-main img { 
-  height: 38px; /* Ajuste a altura da logo conforme necessário */
-  width: auto;
-  object-fit: contain;
-}
 
 .s-brand {
   display: inline-flex; align-items: center; gap: 8px;
@@ -94,6 +86,17 @@ main, article, .hentry, .site-inner, .content-area,
   bottom: -25px; right: -20px; width: 90px; height: 90px;
   border-radius: 50%; background: rgba(255,255,255,.04);
 }
+
+/* Layout do topo do cabeçalho (Tag + Logo) */
+.s-header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+
 .s-header-tag {
   display: inline-block;
   background: rgba(255,255,255,.15);
@@ -101,9 +104,16 @@ main, article, .hentry, .site-inner, .content-area,
   border-radius: 99px; padding: 3px 12px;
   font-size: 10px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 1.2px;
-  color: rgba(255,255,255,.8); margin-bottom: 14px;
-  position: relative; z-index: 1;
+  color: rgba(255,255,255,.8);
+  margin-top: 4px; /* Alinhamento óptico com a logo */
 }
+
+.s-header-logo {
+  height: 48px; /* Aumentado para dar mais destaque */
+  width: auto;
+  object-fit: contain;
+}
+
 .s-header h1 {
   font-size: 24px; font-weight: 700; color: #fff; line-height: 1.32;
   margin-bottom: 12px; position: relative; z-index: 1; letter-spacing: -0.3px;
@@ -118,26 +128,6 @@ main, article, .hentry, .site-inner, .content-area,
   border-radius: 99px; padding: 5px 14px;
   font-size: 12px; color: rgba(255,255,255,.85); font-weight: 500;
   position: relative; z-index: 1;
-}
-
-/* ─── Progress ────────────────────────────────────────────────────────────── */
-.s-progress {
-  padding: 22px 40px 0; background: #fff;
-}
-.s-progress-row {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 8px;
-}
-.s-progress-label { font-size: 11.5px; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-.s-progress-pct   { font-size: 12px; color: #1a5fd4; font-weight: 700; }
-.s-progress-track {
-  height: 5px; background: #f3f4f6; border-radius: 99px; overflow: hidden;
-}
-.s-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #0d2f70, #2178f0);
-  border-radius: 99px;
-  transition: width .55s cubic-bezier(.4,0,.2,1);
 }
 
 /* ─── Steps ───────────────────────────────────────────────────────────────── */
@@ -399,8 +389,8 @@ main, article, .hentry, .site-inner, .content-area,
   #ecac-survey { padding: 0 0 56px; }
   .s-card { border-radius: 0; box-shadow: none; }
   .s-header { padding: 32px 24px 28px; }
+  .s-header-logo { height: 38px; }
   .s-header h1 { font-size: 22px; }
-  .s-progress { padding: 20px 24px 0; }
   .s-body { padding: 28px 24px 24px; }
   .s-nav { padding: 0 24px 32px; }
   .s-thankyou { padding: 60px 24px 52px; }
@@ -413,9 +403,6 @@ main, article, .hentry, .site-inner, .content-area,
 <div id="ecac-survey">
 
   <div class="s-top-bar">
-    <div class="s-logo-main">
-      <img src="imagens/confi_logo_branca.png" alt="Logo Confi">
-    </div>
     <div class="s-brand">
       <span class="s-brand-dot"></span>
       Pesquisa de Produto
@@ -425,22 +412,15 @@ main, article, .hentry, .site-inner, .content-area,
   <div class="s-card">
 
     <div class="s-header">
-      <div class="s-header-tag">Pesquisa Interna</div>
+      <div class="s-header-top-row">
+        <div class="s-header-tag">Pesquisa Interna</div>
+        <img src="imagens/confi_logo_branca.png" alt="Logo Confi" class="s-header-logo">
+      </div>
       <h1>Como a Confi pode ajudar no seu dia a dia com o e-CAC?</h1>
       <p>Confi está avaliando novos módulos para reduzir trabalho manual, automatizar processos e centralizar operações dentro da plataforma.</p>
       <div class="s-header-meta">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Aproximadamente 2 minutos
-      </div>
-    </div>
-
-    <div class="s-progress" id="s-progress">
-      <div class="s-progress-row">
-        <span class="s-progress-label" id="s-prog-label">Etapa 1 de 14</span>
-        <span class="s-progress-pct"   id="s-prog-pct">7%</span>
-      </div>
-      <div class="s-progress-track">
-        <div class="s-progress-fill" id="s-prog-fill" style="width:7%"></div>
       </div>
     </div>
 
@@ -891,20 +871,11 @@ main, article, .hentry, .site-inner, .content-area,
     return ok;
   }
 
-  /* ── Progress ────────────────────────────────────────────── */
-  function updateProgress(s) {
-    var pct = Math.round(s / TOTAL * 100);
-    $('s-prog-label').textContent = 'Etapa ' + s + ' de ' + TOTAL;
-    $('s-prog-pct').textContent   = pct + '%';
-    $('s-prog-fill').style.width  = pct + '%';
-  }
-
   /* ── Show step ───────────────────────────────────────────── */
   function showStep(s) {
     $$('.s-step').forEach(function (el) { el.classList.remove('active'); });
     var target = document.querySelector('[data-step="' + s + '"]');
     if (target) target.classList.add('active');
-    updateProgress(s);
     $('s-btn-back').style.display = s > 1 ? 'block' : 'none';
     $('s-btn-next').textContent   = s === TOTAL ? 'Enviar pesquisa ✓' : 'Avançar →';
     checkBtn();
@@ -1061,7 +1032,6 @@ main, article, .hentry, .site-inner, .content-area,
   }
 
   function showThankyou() {
-    $('s-progress').style.display = 'none';
     $('s-steps').style.display    = 'none';
     $('s-nav').style.display      = 'none';
     $('s-thankyou').classList.add('active');
