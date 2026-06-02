@@ -1043,21 +1043,32 @@ main, article, .hentry, .site-inner, .content-area,
     $('s-thankyou').classList.add('active');
   }
 
+  /* ── Memória em Tempo Real ───────────────────────────────── */
+  var payloadEmMemoria = {};
+  
+  // Atualiza a "foto" do formulário a cada letra digitada ou clique
+  document.addEventListener('input', function() { payloadEmMemoria = collect(); });
+  document.addEventListener('change', function() { payloadEmMemoria = collect(); });
+
   /* ── Captura de Abandono ─────────────────────────────────── */
   function registrarAbandono() {
     if (formEnviado) return;
-    formEnviado = true; // Impede disparos múltiplos se vários eventos ocorrerem
+    formEnviado = true;
 
-    var payload = collect();
+    // Em vez de ler o formulário que está sendo destruído, pegamos a última foto salva!
+    var payload = payloadEmMemoria; 
+    
+    // Fallback de segurança se estiver vazio
+    if (Object.keys(payload).length === 0) {
+        payload = collect();
+    }
+
     payload.abandonado = true;
-    payload.etapa_parada = step;
+    payload.etapa_parada = step; // A variável step não é destruída, então é seguro ler
 
     var jsonPayload = JSON.stringify(payload);
 
     try {
-      // O fetch com keepalive é a forma moderna.
-      // Usar text/plain evita que o navegador exija "Preflight (OPTIONS)" antes de fechar a aba, 
-      // garantindo o envio.
       fetch(ep(), {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
@@ -1065,7 +1076,6 @@ main, article, .hentry, .site-inner, .content-area,
         keepalive: true
       }).catch(function(){});
     } catch (e) {
-      // Fallback para navegadores antigos
       var blob = new Blob([jsonPayload], { type: 'text/plain' });
       navigator.sendBeacon(ep(), blob);
     }
@@ -1082,6 +1092,7 @@ main, article, .hentry, .site-inner, .content-area,
 
   /* ── Init ────────────────────────────────────────────────── */
   showStep(1);
+  payloadEmMemoria = collect(); // Foto inicial
 })();
 </script>
 </body>
