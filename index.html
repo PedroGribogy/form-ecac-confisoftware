@@ -681,31 +681,6 @@ main, article, .hentry, .site-inner, .content-area,
       <div class="s-step" data-step="10">
         <div class="s-step-indicator">
           <div class="s-step-num">10</div>
-          <span class="s-step-name">Funcionalidade Prioritária</span>
-        </div>
-
-        <div class="s-question">
-          <div class="s-q-label">Se você pudesse escolher apenas UMA funcionalidade relacionada ao ECAC para a Confi desenvolver primeiro, qual seria? <span class="s-badge-req">Obrigatório</span></div>
-          <div class="s-q-hint">Resposta descritiva (até 200 caracteres)</div>
-          <textarea class="s-textarea" id="q13" rows="3" maxlength="200" placeholder="Descreva a funcionalidade mais importante para o seu escritório..."></textarea>
-          <div class="s-char-count"><span id="q13-cnt">0</span>/200</div>
-          <div class="s-error" id="q13-err">Por favor, descreva a funcionalidade desejada.</div>
-        </div>
-
-        <div class="s-question">
-          <div class="s-q-label">Você pagaria para ter essa funcionalidade? <span class="s-badge-req">Obrigatório</span></div>
-          <div class="s-opts">
-            <div class="s-opt"><input type="radio" name="q13b" id="q13b-a" value="Sim"><label class="s-opt-label" for="q13b-a"><span class="s-opt-icon"></span><span class="s-opt-text">Sim</span></label></div>
-            <div class="s-opt"><input type="radio" name="q13b" id="q13b-b" value="Não"><label class="s-opt-label" for="q13b-b"><span class="s-opt-icon"></span><span class="s-opt-text">Não</span></label></div>
-            <div class="s-opt"><input type="radio" name="q13b" id="q13b-c" value="Depende"><label class="s-opt-label" for="q13b-c"><span class="s-opt-icon"></span><span class="s-opt-text">Depende</span></label></div>
-          </div>
-          <div class="s-error" id="q13b-err">Por favor, selecione uma opção.</div>
-        </div>
-      </div>
-
-      <div class="s-step" data-step="11">
-        <div class="s-step-indicator">
-          <div class="s-step-num">11</div>
           <span class="s-step-name">Ferramentas Atuais</span>
         </div>
 
@@ -718,23 +693,9 @@ main, article, .hentry, .site-inner, .content-area,
         </div>
       </div>
 
-      <div class="s-step" data-step="12">
+      <div class="s-step" data-step="11">
         <div class="s-step-indicator">
-          <div class="s-step-num">12</div>
-          <span class="s-step-name">Sugestões</span>
-        </div>
-
-        <div class="s-question">
-          <div class="s-q-label">Existe alguma funcionalidade importante que não foi citada acima? <span class="s-badge-opt">Optativo</span></div>
-          <div class="s-q-hint">Resposta descritiva (até 200 caracteres)</div>
-          <textarea class="s-textarea" id="q15" rows="3" maxlength="200" placeholder="Compartilhe qualquer sugestão ou funcionalidade adicional..."></textarea>
-          <div class="s-char-count"><span id="q15-cnt">0</span>/200</div>
-        </div>
-      </div>
-
-      <div class="s-step" data-step="13">
-        <div class="s-step-indicator">
-          <div class="s-step-num">13</div>
+          <div class="s-step-num">11</div>
           <span class="s-step-name">Grupo de Testes</span>
         </div>
 
@@ -750,9 +711,9 @@ main, article, .hentry, .site-inner, .content-area,
         </div>
       </div>
 
-      <div class="s-step" data-step="14">
+      <div class="s-step" data-step="12">
         <div class="s-step-indicator">
-          <div class="s-step-num">14</div>
+          <div class="s-step-num">12</div>
           <span class="s-step-name">Validação de Conceito</span>
         </div>
 
@@ -793,15 +754,13 @@ main, article, .hentry, .site-inner, .content-area,
 (function () {
   'use strict';
 
-  var TOTAL = 14;
+  var TOTAL = 12; // Total de etapas ajustado após a remoção
   var step  = 1;
-  var formEnviado = false; // Controle de abandono
+  var formEnviado = false; 
 
-  /* Endpoint — assembled at runtime */
   var _e = ['https://', 'n8n', '.confi', '.app', '.br', '/webhook', '/ecac-form'];
   var ep  = function () { return _e.join(''); };
 
-  /* ── Helpers ─────────────────────────────────────────────── */
   var $  = function (id) { return document.getElementById(id); };
   var $$ = function (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); };
   var radVal = function (n) { var el = document.querySelector('input[name="' + n + '"]:checked'); return el ? el.value : ''; };
@@ -812,11 +771,9 @@ main, article, .hentry, .site-inner, .content-area,
   function hideErr(id)  { var e = $(id); if (e) { e.classList.remove('show'); } }
   function setInput(id, ok) { var e = $(id); if (e) { e.classList.toggle('has-error', !ok); } }
 
-  /* ── Validation per step ─────────────────────────────────── */
   function isValid(s) {
     switch (s) {
-      case 1:  return $('q1').value.trim() && $('q2').value.trim() &&
-                      isEmail($('q25').value.trim()) && radVal('q3');
+      case 1:  return $('q1').value.trim() && $('q2').value.trim() && isEmail($('q25').value.trim()) && radVal('q3');
       case 2:  return radVal('q4') && radVal('q5');
       case 3:  return cbVals('q6').length > 0;
       case 4:  return !!radVal('q7');
@@ -825,11 +782,9 @@ main, article, .hentry, .site-inner, .content-area,
       case 7:  return cbVals('q10').length > 0;
       case 8:  return !!radVal('q11');
       case 9:  return !!radVal('q12');
-      case 10: return !!$('q13').value.trim() && !!radVal('q13b');
-      case 11: return !!$('q14').value.trim();
-      case 12: return true;
-      case 13: return !!radVal('q16');
-      case 14: return !!$('q17').value.trim();
+      case 10: return !!$('q14').value.trim(); // Antiga etapa 11 (Ferramentas atuais)
+      case 11: return !!radVal('q16');         // Antiga etapa 13 (Grupo de testes)
+      case 12: return !!$('q17').value.trim(); // Antiga etapa 14 (Validação de conceito)
     }
     return false;
   }
@@ -860,19 +815,15 @@ main, article, .hentry, .site-inner, .content-area,
     } else if (s === 9) {
       radVal('q12') ? hideErr('q12-err') : (showErr('q12-err'), ok = false);
     } else if (s === 10) {
-      var q13ok = !!$('q13').value.trim(); setInput('q13', q13ok); q13ok ? hideErr('q13-err') : (showErr('q13-err'), ok = false);
-      radVal('q13b') ? hideErr('q13b-err') : (showErr('q13b-err'), ok = false);
-    } else if (s === 11) {
       $('q14').value.trim() ? hideErr('q14-err') : (showErr('q14-err'), ok = false);
-    } else if (s === 13) {
+    } else if (s === 11) {
       radVal('q16') ? hideErr('q16-err') : (showErr('q16-err'), ok = false);
-    } else if (s === 14) {
+    } else if (s === 12) {
       var q17ok = !!$('q17').value.trim(); setInput('q17', q17ok); q17ok ? hideErr('q17-err') : (showErr('q17-err'), ok = false);
     }
     return ok;
   }
 
-  /* ── Show step ───────────────────────────────────────────── */
   function showStep(s) {
     $$('.s-step').forEach(function (el) { el.classList.remove('active'); });
     var target = document.querySelector('[data-step="' + s + '"]');
@@ -887,7 +838,6 @@ main, article, .hentry, .site-inner, .content-area,
     $('s-btn-next').disabled = !isValid(step);
   }
 
-  /* ── Navigation ──────────────────────────────────────────── */
   $('s-btn-next').addEventListener('click', function () {
     if (!showErrors(step)) return;
     if (step === TOTAL) { submitForm(); return; }
@@ -899,32 +849,27 @@ main, article, .hentry, .site-inner, .content-area,
     if (step > 1) { step--; showStep(step); }
   });
 
-  /* ── Auto-advance for single-radio steps ─────────────────── */
   $$('input[type=radio]').forEach(function (el) {
     el.addEventListener('change', function () {
       checkBtn();
       var name = el.name;
       
-      /* Toggle logic for 'Outro' in radios */
       if (name === 'q11') {
         $('q11-outro').classList.toggle('show', el.value === 'Outro');
       }
 
-      /* single-question radio steps */
       if (['q7','q8','q12','q16'].indexOf(name) !== -1 && isValid(step)) {
         setTimeout(function () {
           if (step !== TOTAL) { step++; showStep(step); }
         }, 420);
       }
       
-      /* Only auto-advance q11 if it's not the "Outro" field */
       if (name === 'q11' && el.value !== 'Outro' && isValid(step)) {
         setTimeout(function () {
           if (step !== TOTAL) { step++; showStep(step); }
         }, 420);
       }
 
-      /* step 2: advance when both answered */
       if ((name === 'q4' || name === 'q5') && isValid(2)) {
         setTimeout(function () {
           if (step === 2) { step++; showStep(step); }
@@ -933,7 +878,6 @@ main, article, .hentry, .site-inner, .content-area,
     });
   });
 
-  /* ── Checkbox limits ─────────────────────────────────────── */
   function setupCb(name, max, limitId, outroId) {
     $$('input[name="' + name + '"]').forEach(function (cb) {
       cb.addEventListener('change', function () {
@@ -956,7 +900,6 @@ main, article, .hentry, .site-inner, .content-area,
   setupCb('q9',  2, 'q9-limit',  'q9-outro');
   setupCb('q10', 2, 'q10-limit', 'q10-outro');
 
-  /* ── Text inputs → live check ────────────────────────────── */
   $$('#q1, #q2, #q25, #q17, #q11-outro-val').forEach(function (el) {
     el.addEventListener('input', checkBtn);
   });
@@ -967,15 +910,14 @@ main, article, .hentry, .site-inner, .content-area,
     checkBtn();
   });
 
-  /* ── Textarea char counters ──────────────────────────────── */
-  [['q13','q13-cnt'], ['q14','q14-cnt'], ['q15','q15-cnt']].forEach(function (pair) {
+  /* ── Textarea char counters (Atualizado para a remoção das etapas) ── */
+  [['q14','q14-cnt']].forEach(function (pair) {
     var ta = $(pair[0]), cnt = $(pair[1]);
     if (ta && cnt) {
       ta.addEventListener('input', function () { cnt.textContent = ta.value.length; checkBtn(); });
     }
   });
 
-  /* ── Collect data ────────────────────────────────────────── */
   function collect() {
     var getOutroVal = function(cbName, outroId) {
       var arr = cbVals(cbName).filter(function(v){return v!=='Outro';});
@@ -1006,23 +948,19 @@ main, article, .hentry, .site-inner, .content-area,
       modulo_consulta_fiscal:     getOutroVal('q10', 'q10-outro-val'),
       automacao_mais_impacto:     q11Val,
       grupo_prioridade:           radVal('q12'),
-      funcionalidade_prioritaria: $('q13').value.trim(),
-      pagaria_por_funcionalidade: radVal('q13b'),
       ferramentas_atuais:         $('q14').value.trim(),
-      funcionalidade_adicional:   $('q15').value.trim(),
       participar_grupo_teste:     radVal('q16'),
       validacao_conceito_img:     $('q17').value.trim(),
       timestamp:                  new Date().toISOString()
     };
   }
 
-  /* ── Submit Normal ───────────────────────────────────────── */
   function submitForm() {
-    formEnviado = true; // Impede disparo duplo via evento de saída da página
+    formEnviado = true; 
     
     var payload = collect();
     payload.abandonado = 'Não';
-    payload.etapa_parada = step.toString(); // Etapa final
+    payload.etapa_parada = step.toString();
 
     $('s-loading').classList.add('show');
     fetch(ep(), {
@@ -1030,7 +968,7 @@ main, article, .hentry, .site-inner, .content-area,
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload)
     })
-    .catch(function () { /* silent — show thank you regardless */ })
+    .catch(function () { })
     .finally(function () {
       $('s-loading').classList.remove('show');
       showThankyou();
@@ -1051,14 +989,12 @@ main, article, .hentry, .site-inner, .content-area,
     var dados = collect();
     var preenchido = false;
     
-    // Varre todos os dados (ignorando o timestamp) para ver se há pelo menos um campo com valor
     for (var key in dados) {
       if (key === 'timestamp') continue;
       if (Array.isArray(dados[key]) && dados[key].length > 0) preenchido = true;
       else if (typeof dados[key] === 'string' && dados[key].trim() !== '') preenchido = true;
     }
 
-    // Só sobrescreve a memória se tiver conteúdo
     if (preenchido) {
       interagiu = true;
       payloadEmMemoria = dados;
@@ -1068,26 +1004,23 @@ main, article, .hentry, .site-inner, .content-area,
   document.addEventListener('input', salvarMemoria, true);
   document.addEventListener('change', salvarMemoria, true);
 
-  /* ── Captura de Abandono ─────────────────────────────────── */
-  document.addEventListener('visibilitychange', function() {
-    // Se o formulário já foi finalizado ou não interagiu, não faz nada
+  /* ── Captura de Abandono Definitiva ─────────────────────── */
+  function registrarAbandono() {
     if (formEnviado || !interagiu || !payloadEmMemoria) return;
+    formEnviado = true; 
 
-    // Se a aba foi ocultada/fechada
-    if (document.visibilityState === 'hidden') {
-      var payloadAbandono = JSON.parse(JSON.stringify(payloadEmMemoria));
-      payloadAbandono.abandonado = "Sim";
-      payloadAbandono.etapa_parada = step.toString();
+    var payloadAbandono = JSON.parse(JSON.stringify(payloadEmMemoria));
+    payloadAbandono.abandonado = "Sim";
+    payloadAbandono.etapa_parada = step.toString();
 
-      fetch(ep(), {
-        method:  'POST',
-        // O TRUQUE ESTÁ AQUI: text/plain burla o CORS Preflight no fechamento da aba
-        headers: { 'Content-Type': 'text/plain' }, 
-        body:    JSON.stringify(payloadAbandono),
-        keepalive: true
-      }).catch(function() {});
-    }
+    var dadosString = JSON.stringify(payloadAbandono);
+    navigator.sendBeacon(ep(), dadosString);
+  }
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') registrarAbandono();
   });
+  window.addEventListener('pagehide', registrarAbandono);
 
   /* ── Init ────────────────────────────────────────────────── */
   showStep(1);
