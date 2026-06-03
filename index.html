@@ -1070,22 +1070,22 @@ main, article, .hentry, .site-inner, .content-area,
 
   /* ── Captura de Abandono ─────────────────────────────────── */
   document.addEventListener('visibilitychange', function() {
-    // Se o formulário já foi finalizado, não faz nada
+    // Se o formulário já foi finalizado ou não interagiu, não faz nada
     if (formEnviado || !interagiu || !payloadEmMemoria) return;
 
     // Se a aba foi ocultada/fechada
     if (document.visibilityState === 'hidden') {
       var payloadAbandono = JSON.parse(JSON.stringify(payloadEmMemoria));
       payloadAbandono.abandonado = "Sim";
-      payloadAbandono.etapa_parada = step;
+      payloadAbandono.etapa_parada = step.toString();
 
-      // Usamos o fetch normal, mas com keepalive: true
       fetch(ep(), {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        // O TRUQUE ESTÁ AQUI: text/plain burla o CORS Preflight no fechamento da aba
+        headers: { 'Content-Type': 'text/plain' }, 
         body:    JSON.stringify(payloadAbandono),
-        keepalive: true // ← A mágica acontece aqui!
-      }).catch(function() { /* Silencioso no background */ });
+        keepalive: true
+      }).catch(function() {});
     }
   });
 
