@@ -122,6 +122,10 @@ main, article, .hentry, .site-inner, .content-area,
   font-size: 14px; color: rgba(255,255,255,.8);
   line-height: 1.6; position: relative; z-index: 1;
 }
+.s-header p mark {
+  background: #ffd633; color: #1a1a1a;
+  padding: 1px 4px; border-radius: 3px; font-weight: 600;
+}
 .s-header-meta {
   display: inline-flex; align-items: center; gap: 6px;
   margin-top: 18px; background: rgba(255,255,255,.1);
@@ -179,6 +183,13 @@ main, article, .hentry, .site-inner, .content-area,
 }
 .s-q-hint {
   font-size: 12.5px; color: #9ca3af; margin-bottom: 14px; font-weight: 400;
+}
+.s-q-hint-strong {
+  display: inline-block; font-size: 15px; font-weight: 700; color: #1a5fd4;
+  background: #eff6ff; border-radius: 8px; padding: 6px 12px; margin-bottom: 14px;
+}
+.s-info-text {
+  font-size: 14.5px; color: #4b5563; line-height: 1.65;
 }
 
 /* ─── Text inputs ─────────────────────────────────────────────────────────── */
@@ -251,6 +262,9 @@ main, article, .hentry, .site-inner, .content-area,
 .s-opt input:checked + .s-opt-label {
   border-color: #1a5fd4; background: #eff6ff;
   box-shadow: 0 4px 12px rgba(26,95,212,.08);
+}
+.s-opt input:disabled:not(:checked) + .s-opt-label {
+  opacity: .45; cursor: not-allowed; pointer-events: none;
 }
 .s-opt input:checked + .s-opt-label .s-opt-icon {
   border-color: #1a5fd4; background: rgba(26,95,212,.1);
@@ -415,7 +429,7 @@ main, article, .hentry, .site-inner, .content-area,
         <img src="imagens/confi_logo_branca.png" alt="Logo Confi" class="s-header-logo">
       </div>
       <h1>Pesquisa rápida sobre sua contabilidade</h1>
-      <p>Queremos entender o que seria mais útil para você em uma área do cliente da sua contabilidade.</p>
+      <p>Queremos entender <mark>o que seria mais útil para você em uma área do cliente</mark> da sua contabilidade.</p>
       <div class="s-header-meta">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Leva cerca de 2 minutos
@@ -469,7 +483,7 @@ main, article, .hentry, .site-inner, .content-area,
         </div>
 
         <div class="s-question">
-          <div class="s-q-label">Sua contabilidade ajuda você com informações para tomar decisões? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-label">Sua contabilidade te ajuda com informações para tomar decisões? <span class="s-badge-req">Obrigatório</span></div>
           <div class="s-opts">
             <div class="s-opt"><input type="radio" name="q3" id="q3a" value="Frequentemente"><label class="s-opt-label" for="q3a"><span class="s-opt-icon"></span><span class="s-opt-text">Frequentemente</span></label></div>
             <div class="s-opt"><input type="radio" name="q3" id="q3b" value="Às vezes"><label class="s-opt-label" for="q3b"><span class="s-opt-icon"></span><span class="s-opt-text">Às vezes</span></label></div>
@@ -483,12 +497,24 @@ main, article, .hentry, .site-inner, .content-area,
       <div class="s-step" data-step="4">
         <div class="s-step-indicator">
           <div class="s-step-num">4</div>
+          <span class="s-step-name">Sobre a Área do Cliente</span>
+        </div>
+
+        <div class="s-question">
+          <div class="s-q-label">O que é a Área do Cliente?</div>
+          <p class="s-info-text">A Área do Cliente da contabilidade é um espaço que pode ser acessado pelo computador ou celular, onde você encontra documentos e informações e pode interagir com o seu contador.</p>
+        </div>
+      </div>
+
+      <div class="s-step" data-step="5">
+        <div class="s-step-indicator">
+          <div class="s-step-num">5</div>
           <span class="s-step-name">Prioridades da Área do Cliente</span>
         </div>
 
         <div class="s-question">
-          <div class="s-q-label">O que mais faria você acessar uma área do cliente? <span class="s-badge-req">Obrigatório</span></div>
-          <div class="s-q-hint">Selecione quantas quiser por ordem de prioridade</div>
+          <div class="s-q-label">O que faria você acessar uma área do cliente? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint-strong">Selecione 3 e ordem de prioridade</div>
           <div class="s-opts" id="q4-list">
             <div class="s-opt"><input type="checkbox" name="q4" id="q4a" value="Guias e impostos"><label class="s-opt-label" for="q4a"><span class="s-opt-icon sq"></span><span class="s-opt-text">Guias e impostos</span><span class="s-opt-rank"></span></label></div>
             <div class="s-opt"><input type="checkbox" name="q4" id="q4b" value="Faturamento, custos e lucro"><label class="s-opt-label" for="q4b"><span class="s-opt-icon sq"></span><span class="s-opt-text">Faturamento, custos e lucro</span><span class="s-opt-rank"></span></label></div>
@@ -496,11 +522,8 @@ main, article, .hentry, .site-inner, .content-area,
             <div class="s-opt"><input type="checkbox" name="q4" id="q4d" value="Vencimentos e alertas"><label class="s-opt-label" for="q4d"><span class="s-opt-icon sq"></span><span class="s-opt-text">Vencimentos e alertas</span><span class="s-opt-rank"></span></label></div>
             <div class="s-opt"><input type="checkbox" name="q4" id="q4e" value="Pendências com a contabilidade"><label class="s-opt-label" for="q4e"><span class="s-opt-icon sq"></span><span class="s-opt-text">Pendências com a contabilidade</span><span class="s-opt-rank"></span></label></div>
             <div class="s-opt"><input type="checkbox" name="q4" id="q4f" value="Faturas da contabilidade: pagas, em aberto e próximas cobranças"><label class="s-opt-label" for="q4f"><span class="s-opt-icon sq"></span><span class="s-opt-text">Faturas da contabilidade: pagas, em aberto e próximas cobranças</span><span class="s-opt-rank"></span></label></div>
-            <div class="s-opt"><input type="checkbox" name="q4" id="q4g" value="Folha e funcionários"><label class="s-opt-label" for="q4g"><span class="s-opt-icon sq"></span><span class="s-opt-text">Folha e funcionários</span><span class="s-opt-rank"></span></label></div>
-            <div class="s-opt"><input type="checkbox" name="q4" id="q4h" value="Recomendações tributárias"><label class="s-opt-label" for="q4h"><span class="s-opt-icon sq"></span><span class="s-opt-text">Recomendações tributárias</span><span class="s-opt-rank"></span></label></div>
             <div class="s-opt"><input type="checkbox" name="q4" id="q4i" value="Mudanças importantes na legislação"><label class="s-opt-label" for="q4i"><span class="s-opt-icon sq"></span><span class="s-opt-text">Mudanças importantes na legislação</span><span class="s-opt-rank"></span></label></div>
             <div class="s-opt"><input type="checkbox" name="q4" id="q4j" value="Documentos e relatórios da contabilidade"><label class="s-opt-label" for="q4j"><span class="s-opt-icon sq"></span><span class="s-opt-text">Documentos e relatórios da contabilidade</span><span class="s-opt-rank"></span></label></div>
-            <div class="s-opt"><input type="checkbox" name="q4" id="q4k" value="Indicadores da empresa"><label class="s-opt-label" for="q4k"><span class="s-opt-icon sq"></span><span class="s-opt-text">Indicadores da empresa</span><span class="s-opt-rank"></span></label></div>
             <div class="s-opt"><input type="checkbox" name="q4" id="q4l" value="Outro"><label class="s-opt-label" for="q4l"><span class="s-opt-icon sq"></span><span class="s-opt-text">Outro</span><span class="s-opt-rank"></span></label></div>
           </div>
           <div class="s-outro" id="q4-outro">
@@ -510,15 +533,15 @@ main, article, .hentry, .site-inner, .content-area,
         </div>
       </div>
 
-      <div class="s-step" data-step="5">
+      <div class="s-step" data-step="6">
         <div class="s-step-indicator">
-          <div class="s-step-num">5</div>
+          <div class="s-step-num">6</div>
           <span class="s-step-name">Funcionalidades Desejadas</span>
         </div>
 
         <div class="s-question">
-          <div class="s-q-label">O que você gostaria de conseguir fazer por essa área? <span class="s-badge-req">Obrigatório</span></div>
-          <div class="s-q-hint">Selecione quantas quiser por ordem de prioridade</div>
+          <div class="s-q-label">O que você gostaria de conseguir fazer na área do cliente? <span class="s-badge-req">Obrigatório</span></div>
+          <div class="s-q-hint-strong">Selecione 3 e ordem de prioridade</div>
           <div class="s-opts" id="q5-list">
             <div class="s-opt"><input type="checkbox" name="q5" id="q5a" value="Solicitar admissão, férias ou rescisão"><label class="s-opt-label" for="q5a"><span class="s-opt-icon sq"></span><span class="s-opt-text">Solicitar admissão, férias ou rescisão</span><span class="s-opt-rank"></span></label></div>
             <div class="s-opt"><input type="checkbox" name="q5" id="q5b" value="Enviar informações da folha"><label class="s-opt-label" for="q5b"><span class="s-opt-icon sq"></span><span class="s-opt-text">Enviar informações da folha</span><span class="s-opt-rank"></span></label></div>
@@ -539,9 +562,9 @@ main, article, .hentry, .site-inner, .content-area,
         </div>
       </div>
 
-      <div class="s-step" data-step="6">
+      <div class="s-step" data-step="7">
         <div class="s-step-indicator">
-          <div class="s-step-num">6</div>
+          <div class="s-step-num">7</div>
           <span class="s-step-name">Preferência de Uso</span>
         </div>
 
@@ -557,21 +580,21 @@ main, article, .hentry, .site-inner, .content-area,
         </div>
       </div>
 
-      <div class="s-step" data-step="7">
+      <div class="s-step" data-step="8">
         <div class="s-step-indicator">
-          <div class="s-step-num">7</div>
+          <div class="s-step-num">8</div>
           <span class="s-step-name">Valor Percebido</span>
         </div>
 
         <div class="s-question">
-          <div class="s-q-label">O que faria essa área realmente valer a pena para você? <span class="s-badge-opt">Opcional</span></div>
+          <div class="s-q-label">O que faria essa Área do Cliente realmente valer a pena para você? <span class="s-badge-opt">Opcional</span></div>
           <textarea class="s-textarea" id="q7" rows="4" placeholder="Sua resposta..."></textarea>
         </div>
       </div>
 
-      <div class="s-step" data-step="8">
+      <div class="s-step" data-step="9">
         <div class="s-step-indicator">
-          <div class="s-step-num">8</div>
+          <div class="s-step-num">9</div>
           <span class="s-step-name">Seus Dados</span>
         </div>
 
@@ -627,7 +650,7 @@ main, article, .hentry, .site-inner, .content-area,
 (function () {
   'use strict';
 
-  var TOTAL = 8;
+  var TOTAL = 9;
   var step  = 1;
   var formEnviado = false;
 
@@ -648,11 +671,12 @@ main, article, .hentry, .site-inner, .content-area,
       case 1: return !!radVal('q1');
       case 2: return !!radVal('q2');
       case 3: return !!radVal('q3');
-      case 4: return cbVals('q4').length > 0;
-      case 5: return cbVals('q5').length > 0;
-      case 6: return !!radVal('q6');
-      case 7: return true; // opcional
-      case 8: return !!radVal('q10');
+      case 4: return true; // tela informativa
+      case 5: return cbVals('q4').length > 0;
+      case 6: return cbVals('q5').length > 0;
+      case 7: return !!radVal('q6');
+      case 8: return true; // opcional
+      case 9: return !!radVal('q10');
     }
     return false;
   }
@@ -665,13 +689,13 @@ main, article, .hentry, .site-inner, .content-area,
       radVal('q2') ? hideErr('q2-err') : (showErr('q2-err'), ok = false);
     } else if (s === 3) {
       radVal('q3') ? hideErr('q3-err') : (showErr('q3-err'), ok = false);
-    } else if (s === 4) {
-      cbVals('q4').length ? hideErr('q4-err') : (showErr('q4-err'), ok = false);
     } else if (s === 5) {
-      cbVals('q5').length ? hideErr('q5-err') : (showErr('q5-err'), ok = false);
+      cbVals('q4').length ? hideErr('q4-err') : (showErr('q4-err'), ok = false);
     } else if (s === 6) {
+      cbVals('q5').length ? hideErr('q5-err') : (showErr('q5-err'), ok = false);
+    } else if (s === 7) {
       radVal('q6') ? hideErr('q6-err') : (showErr('q6-err'), ok = false);
-    } else if (s === 8) {
+    } else if (s === 9) {
       radVal('q10') ? hideErr('q10-err') : (showErr('q10-err'), ok = false);
     }
     return ok;
@@ -722,27 +746,34 @@ main, article, .hentry, .site-inner, .content-area,
   /* ── Checkboxes com ordem de prioridade ─────────────────────── */
   var priorityOrders = {};
 
-  function setupPriorityCb(name, outroId) {
+  function setupPriorityCb(name, outroId, maxCount) {
     priorityOrders[name] = [];
     $$('input[name="' + name + '"]').forEach(function (cb) {
       cb.addEventListener('change', function () {
         var order = priorityOrders[name];
         if (cb.checked) {
+          if (maxCount && order.length >= maxCount) {
+            cb.checked = false;
+            return;
+          }
           order.push(cb.id);
         } else {
           priorityOrders[name] = order.filter(function (id) { return id !== cb.id; });
         }
+        var atMax = !!maxCount && priorityOrders[name].length >= maxCount;
         $$('input[name="' + name + '"]').forEach(function (c) {
           var rankEl = document.querySelector('label[for="' + c.id + '"] .s-opt-rank');
           var idx = priorityOrders[name].indexOf(c.id);
-          if (!rankEl) return;
-          if (idx !== -1) {
-            rankEl.textContent = idx + 1;
-            rankEl.classList.add('show');
-          } else {
-            rankEl.textContent = '';
-            rankEl.classList.remove('show');
+          if (rankEl) {
+            if (idx !== -1) {
+              rankEl.textContent = idx + 1;
+              rankEl.classList.add('show');
+            } else {
+              rankEl.textContent = '';
+              rankEl.classList.remove('show');
+            }
           }
+          c.disabled = atMax && idx === -1;
         });
         if (outroId) {
           var hasOtro = $$('input[name="' + name + '"]:checked').some(function (e) { return e.value === 'Outro'; });
@@ -752,8 +783,8 @@ main, article, .hentry, .site-inner, .content-area,
       });
     });
   }
-  setupPriorityCb('q4', 'q4-outro');
-  setupPriorityCb('q5', 'q5-outro');
+  setupPriorityCb('q4', 'q4-outro', 3);
+  setupPriorityCb('q5', 'q5-outro', 3);
 
   function getPriorityVals(name, outroId) {
     var ids = priorityOrders[name] || [];
